@@ -10,6 +10,10 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
     <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+
+    {% block head %}
+    {% endblock %}
+
   </head>
 
   <body>
@@ -42,17 +46,57 @@
                         {% endif %}
                     </li>
                     <li class="nav-item">
-                        {% if request.path == "/profile" %}
-                        <li><a href="{{ url_for('index') }}" class="nav-link active" aria-current="page">Profile</a></li>
-                        {% else %}
-                        <li><a href="{{ url_for('index') }}" class="nav-link" aria-current="page">Profile</a></li>
+                        {% if current_user.is_authenticated %}
+                            {% if request.path == "/profile" %}
+                            <li><a href="{{ url_for('index') }}" class="nav-link active" aria-current="page">Profile</a></li>
+                            {% else %}
+                            <li><a href="{{ url_for('index') }}" class="nav-link" aria-current="page">Profile</a></li>
+                            {% endif %}
                         {% endif %}
                     </li>
                 </ul>
                 <div class="hstack gap-3">
-                    <div class="d-lg-flex col-lg-3 justify-content-lg-end">
-                        <a href="{{ url_for('index') }}" class="btn btn-secondary" role="button">Login</a>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Menu
+                        </button>
+                        <ul class="dropdown-menu">
+                            {% if current_user and current_user.is_authenticated %}
+                                {# already authenticated user #}
+                                <li><a class="dropdown-item" href="{{ url_for_security('logout') }}">{{ _fsdomain('Logout') }}</a></li>
+                                {% if security.changeable %}
+                                <li><a class="dropdown-item" href="{{ url_for_security('change_password') }}">{{ _fsdomain("Change Password") }}</a></li>
+                                {% endif %}
+                                {% if security.two_factor %}
+                                <li><a class="dropdown-item" href="{{ url_for_security('two_factor_setup') }}">{{ _fsdomain("Two Factor Setup") }}</a></li>
+                                {% endif %}
+                                {% if security.unified_signin %}
+                                <li><a class="dropdown-item" href="{{ url_for_security('us_setup') }}">{{ _fsdomain("Unified Signin Setup") }}</a></li>
+                                {% endif %}
+                                {% if security.webauthn %}
+                                <li><a class="dropdown-item" href="{{ url_for_security('wan_register') }}">{{ _fsdomain("WebAuthn Setup") }}</a></li>
+                                {% endif %}
+                            {% else %}
+                                {% if not skip_login_menu %}
+                                <li><a class="dropdown-item" href="{{ url_for_security('login') }}{% if 'next' in request.args %}?next={{ request.args.next|urlencode }}{% endif %}">{{ _fsdomain('Login') }}</a></li>
+                                {% endif %}
+                                {% if security.unified_signin and not skip_login_menu %}
+                                <li><a class="dropdown-item" href="{{ url_for_security('us_signin') }}{% if 'next' in request.args %}?next={{ request.args.next|urlencode }}{% endif %}">{{ _fsdomain("Unified Sign In") }}</a></li>
+                                {% endif %}
+                                {% if security.registerable %}
+                                <li><a class="dropdown-item" href="{{ url_for_security('register') }}{% if 'next' in request.args %}?next={{ request.args.next|urlencode }}{% endif %}">{{ _fsdomain('Register') }}</a></li>
+                                {% endif %}
+                                {% if security.recoverable %}
+                                <li><a class="dropdown-item" href="{{ url_for_security('forgot_password') }}">{{ _fsdomain('Forgot password') }}</a></li>
+                                {% endif %}
+                                {% if security.confirmable %}
+                                <li><a class="dropdown-item" href="{{ url_for_security('send_confirmation') }}">{{ _fsdomain('Confirm account') }}</a></li>
+                                {% endif %}
+                            {% endif %}
+                        </ul>
                     </div>
+
+
                     <div class="vr"></div>
                     <div>
                         <li class="nav-item dropdown list-unstyled">

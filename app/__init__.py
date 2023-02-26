@@ -26,7 +26,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 dotenv_path = join(basedir, '.env')
 load_dotenv(dotenv_path)
 
-if os.environ['FLASK_ENV'] == 'prod':
+if not os.environ['FLASK_DEBUG']:
     app.config.from_object('config.ProdConfig')
 else:
     app.config.from_object('config.DevConfig')

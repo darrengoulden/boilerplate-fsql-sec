@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <style>
+    .fs-center { text-align: center }
+    .fs-important { font-size: larger; font-weight: bold }
+    .fs-gap { margin-top: 20px; }
+    .fs-div { margin: 4px; }
+    .fs-error-msg { color: darkred; }
+    .form-signin {
+        max-width: 330px;
+        padding: 15px;
+        padding-top: 200px;
+    }
+
+    .form-signin .form-floating:focus-within {
+        z-index: 2;
+    }
+
+    .form-signin input[type="email"] {
+        margin-bottom: 5px;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    .form-signin-mask-username {
+        margin-bottom: 5px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    .form-signin-mask-password {
+        margin-bottom: 5px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    .form-signin-mask-retype-password {
+        margin-bottom: 10px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+
+  </style>
+{% endblock %}
+
+{% from "security/_macros.html" import render_field_with_errors, render_field, render_form_errors %}
+
+{% block content %}
+{% include "security/_messages.html" %}
+<main class="form-signin w-100 m-auto">
+  <h2>{{ _fsdomain('Please register') }}</h2>
+  <form action="{{ url_for_security('register') }}" method="POST" name="register_user_form">
+    {{ register_user_form.hidden_tag() }}
+    {{ render_form_errors(register_user_form) }}
+    {{ render_field_with_errors(register_user_form.email, type="email", class="form-control") }}
+    {% if security.username_enable %}
+      {{ render_field_with_errors(register_user_form.username, type="username", class="form-control form-signin-mask-username") }}
+    {%  endif %}
+    {{ render_field_with_errors(register_user_form.password, type="password", class="form-control form-signin-mask-password") }}
+    {% if register_user_form.password_confirm %}
+      {{ render_field_with_errors(register_user_form.password_confirm, type="password", class="form-control form-signin-mask-retype-password ") }}
+    {% endif %}
+    {{ render_field(register_user_form.submit, class="w-100 btn btn-lg btn-secondary") }}
+  </form>
+{% include "security/_menu.html" %}
+</main>
+{% endblock %}

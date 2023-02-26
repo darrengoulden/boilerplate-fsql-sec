@@ -5,6 +5,7 @@ from flask import (
     render_template,
     render_template_string
 )
+from flask_mailman import Mail
 from flask_security import (
     current_user,
     auth_required,
@@ -18,6 +19,24 @@ from os.path import join
 # Internal imports
 from app.database import db
 from app.models import User, Role
+
+from logging.config import dictConfig
+
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+    }},
+    'handlers': {'wsgi': {
+        'class': 'logging.StreamHandler',
+        'stream': 'ext://flask.logging.wsgi_errors_stream',
+        'formatter': 'default'
+    }},
+    'root': {
+        'level': 'DEBUG',
+        'handlers': ['wsgi']
+    }
+})
 
 app = Flask(__name__)
 
@@ -34,6 +53,9 @@ else:
 # Setup Flask-Security
 user_datastore = SQLAlchemySessionUserDatastore(db.session, User, Role)
 app.security = Security(app, user_datastore)
+
+# Flask-Mailman
+mail = Mail(app)
 
 @app.route('/')
 def index():

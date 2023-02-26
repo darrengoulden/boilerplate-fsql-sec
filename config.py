@@ -26,6 +26,7 @@ class Config:
     """
     # Core
     SECURITY_FLASH_MESSAGES = True # Specifies whether or not to flash messages during security procedures.
+    SECURITY_SHOW_MENU = True
     # Login/Logout
     SECURITY_LOGIN_URL = "/login"
     SECURITY_LOGOUT_URL = "/logout"
@@ -34,13 +35,13 @@ class Config:
     SECURITY_UNAUTHORIZED_VIEW = None
     # Registerable
     SECURITY_REGISTERABLE = True
-    SECURITY_SEND_REGISTER_EMAIL = False
+    SECURITY_SEND_REGISTER_EMAIL = True
     SECURITY_EMAIL_SUBJECT_REGISTER = 'Welcome'
     SECURITY_POST_REGISTER_VIEW = None
-    SECURITY_USERNAME_ENABLE = True
+    SECURITY_USERNAME_ENABLE = False
     SECURITY_USERNAME_REQUIRED = False
     # Confirmable
-    SECURITY_CONFIRMABLE = False
+    SECURITY_CONFIRMABLE = True
     SECURITY_CONFIRM_EMAIL_WITHIN = '5 days'
     SECURITY_EMAIL_SUBJECT_CONFIRM = 'Please confirm your email'
     SECURITY_POST_CONFIRM_VIEW = None
@@ -50,7 +51,7 @@ class Config:
     SECURITY_SEND_PASSWORD_CHANGE_EMAIL = True
     SECURITY_EMAIL_SUBJECT_PASSWORD_CHANGE_NOTICE = 'Your password has been changed'
     # Recoverable
-    SECURITY_RECOVERABLE = False
+    SECURITY_RECOVERABLE = True
     SECURITY_POST_RESET_VIEW = None
     SECURITY_RESET_VIEW = None
     SECURITY_RESET_PASSWORD_WITHIN = '5 days'
@@ -64,11 +65,23 @@ class Config:
     SECURITY_OAUTH_ENABLE = False
     SECURITY_OAUTH_BUILTIN_PROVIDERS = ["google"]
     
-
-
+    """
+    Flask-Mailman
+    """
+    MAIL_SERVER = os.environ.get('MAIL_SERVER')
+    MAIL_PORT = os.environ.get('MAIL_PORT')
+    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS')
+    MAIL_USE_SSL = os.environ.get('MAIL_USE_SSL')
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+    MAIL_DEBUG = True
+    MAIL_BACKEND = 'file'
+    MAIL_SUPPRESS_SEND = False
+    MAIL_FILE_PATH = '/Users/daz/github/boilerplate-fsql-sec'
 
 class ProdConfig(Config):
     DEBUG = os.environ.get('FLASK_DEBUG')
+    TESTING = False
 
 
 class DevConfig(Config):

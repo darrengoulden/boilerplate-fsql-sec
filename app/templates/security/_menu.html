@@ -1,3 +1,4 @@
+{% if security.show_menu %}
 {% if security.registerable or security.recoverable or security.confirmable or security.unified_signin or security.two_factor or security.webauthn %}
 <hr>
 <ul class="list-unstyled">
@@ -34,4 +35,5 @@
     {% endif %}
   {% endif %}
 </ul>
+{% endif %}
 {% endif %}
